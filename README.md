@@ -197,10 +197,6 @@ The application will be available at:
    - Default login: `admin` / `admin`
    - **Change password immediately** when prompted
 
-   ![Initial Login and Password Change](userguide/sonar1.png)
-   
-   **Reference:** See `userguide/sonar1.png` for the initial login screen and password change prompt.
-
 2. **Create Project:**
    - After changing password, go to: **Projects** → **Create Project** → **Manually**
    - Project Key: `application_testing`
@@ -210,26 +206,11 @@ The application will be available at:
 ### 8.2: Configure Project Analysis
 
 After creating the project, you'll see the "Analyze your project" page. Follow these steps:
+    Here, select the analysis project using the "locally" one.
 
-1. **Select Build Type:**
-   - On the "Analyze your project" page, select: **"Other (for JS, TS, Go, Python, PHP, ...)"**
-   - This option is shown in the screenshot below (from `userguide/sonar1.png`)
+   ![Initial Login and Password Change](userguide/sonar1.png)
 
-   ![Select Build Type - Other Option](userguide/sonar1.png)
-
-2. **Select Language/Framework:**
-   - In the next step, select: **JS/TS/Python** section
-   - Reference screenshot: `userguide/sonar4.png`
-
-   ![Select JS/TS/Python Section](userguide/sonar4.png)
-
-3. **Select Operating System:**
-   - Choose your OS: **Linux**, **Windows**, or **macOS**
-   - Reference screenshot: `userguide/sonar5.png`
-
-   ![Select Operating System](userguide/sonar5.png)
-
-### 8.3: Generate Authentication Token
+   ### 8.3: Generate Authentication Token
 
 1. **Generate Project Token:**
    - On the "Provide a token" step (Step 1), select: **"Generate a project token"**
@@ -245,6 +226,24 @@ After creating the project, you'll see the "Analyze your project" page. Follow t
    Example token format: `sqp_57c9315d2fd07854f27452bcc29ec0017e7b52e8`
    
    **Note:** Save this token securely as you'll need it for running scans.
+
+1. **Select Build Type:**
+   - On the "Analyze your project" page, select: **"Other (for JS, TS, Go, Python, PHP, ...)"**
+   - This option is shown in the screenshot below (from `userguide/sonar1.png`)
+
+   ![Select Build Type - Other Option](userguide/sonar4.png)
+
+2. **Select Language/Framework:**
+   - In the next step, select: **JS/TS/Python** section
+   - Reference screenshot: `userguide/sonar4.png`
+
+   ![Select JS/TS/Python Section](userguide/sonar5.png)
+
+3. **Select Operating System:**
+   - Choose your OS: **Linux**, **Windows**, or **macOS**
+   - Reference screenshot: `userguide/sonar5.png`
+
+   ![Select Operating System](userguide/sonar6.png)
 
 ### 8.4: Configure SonarQube Scanner
 
@@ -298,31 +297,6 @@ $env:SONAR_TOKEN="sqp_57c9315d2fd07854f27452bcc29ec0017e7b52e8"
 2. Run scan via Docker:
 ```cmd
 docker-compose run --rm -e SONAR_LOGIN=$env:SONAR_TOKEN sonar-scanner
-```
-
-#### Option 3: Using Windows Scanner (Manual Command)
-
-1. **Download SonarScanner for Windows:**
-   - Visit: https://docs.sonarqube.org/latest/analyzing-source-code/scanners/sonarscanner/
-   - Download: `sonar-scanner-cli-4.7.0.2747-windows.zip`
-   - Extract to: `C:\sonar-scanner`
-
-2. **Add to PATH:**
-   - System Properties → Environment Variables
-   - Add `C:\sonar-scanner\bin` to PATH
-   - Restart terminal after adding to PATH
-
-3. **Run scan from project root:**
-```cmd
-sonar-scanner -Dsonar.projectKey=application_testing -Dsonar.sources=. -Dsonar.host.url=http://localhost:9001 -Dsonar.login=sqp_57c9315d2fd07854f27452bcc29ec0017e7b52e8
-```
-
-**Note:** Replace `sqp_57c9315d2fd07854f27452bcc29ec0017e7b52e8` with your actual token from Step 8.3.
-
-**Alternative (if token is in environment variable):**
-```cmd
-set SONAR_TOKEN=sqp_57c9315d2fd07854f27452bcc29ec0017e7b52e8
-sonar-scanner -Dsonar.projectKey=application_testing -Dsonar.sources=. -Dsonar.host.url=http://localhost:9001 -Dsonar.login=%SONAR_TOKEN%
 ```
 
 #### macOS/Linux: Using the Shell Script
