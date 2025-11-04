@@ -1,0 +1,61 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.2.0
+
+jobs:
+  build-and-scan:
+    docker:
+      - image: cimg/node:18.18
+      - image: mysql:8.0
+        environment:
+          MYSQL_ROOT_PASSWORD: rootpass
+          MYSQL_DATABASE: apds_app
+      - image: sonarqube:9-community
+        environment:
+          SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    steps:
+      - checkout
+      - run: node -v && npm -v
+      - run:
+          name: Wait for MySQL
+          command: |
+            for i in `seq 1 60`; do
+              (echo > /dev/tcp/localhost/3306) >/dev/null 2>&1 && break
+              echo "waiting for mysql..."; sleep 1
+            done
+      - run:
+          name: Install client deps
+          working_directory: client
+          command: npm ci --no-audit --no-fund
+      - run:
+          name: Install server deps
+          working_directory: server
+          command: npm ci --no-audit --no-fund
+      - run:
+          name: Create DB schema
+          working_directory: server
+          command: npm run db:schema
+      - run:
+          name: Seed roles and employees
+          working_directory: server
+          command: |
+            node ./scripts/runSql.js ./db/schema.sql
+            node ./scripts/seedRoles.js || true
+            node ./scripts/seedEmployees.js || true
+      - run:
+          name: SonarQube scan
+          command: |
+            curl -sSL https://github.com/SonarSource/sonar-scanner-cli/releases/download/v5.0.1.3006/sonar-scanner-5.0.1.3006-linux.zip -o scanner.zip
+            unzip -q scanner.zip
+            ./sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner \
+              -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+              -Dsonar.host.url=${SONAR_HOST_URL:-http://localhost:9000} \
+              -Dsonar.login=${SONAR_TOKEN}
+
+workflows:
+  build:
+    jobs:
+      - build-and-scan:
+          context: SonarQube
+
