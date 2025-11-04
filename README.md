@@ -35,7 +35,7 @@ cd C:\Users\YourUsername\Documents
 ```
 3. Clone the repository:
 ```cmd
-git clone https://github.com/yourusername/apds7311-secure-portal-main.git
+git clone https://github.com/VishathAmarasinghe/Freelance_secure_portal.git
 cd apds7311-secure-portal-main
 ```
 
